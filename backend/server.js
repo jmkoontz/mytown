@@ -2,8 +2,6 @@ const express = require('express');
 const bodyParser = require('body-parser');
 const mysql = require('mysql');
 
-//const DAO = require('./config/db');
-//const MainModel = require('./models/mainModel');
 const mainController = require('./controllers/mainController');
 
 const app = express();
@@ -17,16 +15,6 @@ app.use(bodyParser.json());
 //   res.header('Access-Control-Allow-Headers', 'Origin, X-Requested-With, Content-Type, Accept');
 //   res.sendStatus(200);
 // });
-
-
-const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: 'password',
-  database: 'citydata'
-});
-
-connection.connect();
 
 // run controller
 mainController(app);

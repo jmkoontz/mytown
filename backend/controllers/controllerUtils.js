@@ -1,5 +1,6 @@
 module.exports = {
   parseError: function(err) {
+    console.log(err);
     let error = {
       status: 0,
       message: ''
