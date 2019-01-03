@@ -1,8 +1,8 @@
 import React, { Component } from 'react';
 
-import NavBar from './Components/NavBar';
-
 import './Static/CSS/Main.css';
+
+import NavBar from './Components/NavBar';
 
 class Main extends Component {
   constructor(props) {
@@ -10,7 +10,7 @@ class Main extends Component {
 
     this.state = {
 
-    }
+    };
   }
 
   render() {
@@ -19,10 +19,12 @@ class Main extends Component {
         <div className='navbar-fixed'>
           <NavBar />
         </div>
-
-
+        <div className='content'>
+          <this.props.component town={this.props.town} county={this.props.county}
+              state={this.props.state} />
+        </div>
       </div>
-    )
+    );
   }
 }
 

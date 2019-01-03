@@ -1,33 +1,32 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 
-import logo from './Static/Images/logo.svg';
-import './Static/CSS/App.css';
-
 import Main from './Main';
+import Home from './Pages/Home';
+import Town from './Pages/Town';
+import County from './Pages/County';
+import State from './Pages/State';
 
-// <div className="App">
-//   <header className="App-header">
-//     <img src={logo} className="App-logo" alt="logo" />
-//     <p>
-//       Edit <code>src/App.js</code> and save to reload.
-//     </p>
-//     <a
-//       className="App-link"
-//       href="https://reactjs.org"
-//       target="_blank"
-//       rel="noopener noreferrer"
-//     >
-//       Learn React
-//     </a>
-//   </header>
-// </div>
 class App extends Component {
   render() {
     return (
       <Switch>
         <Route path='/MyTown/Home' render={() => (
-          <Main />
+          <Main component={Home} />
+        )}/>
+
+        <Route path='/MyTown/Town/:town/:county/:state' render={(match) => (
+          <Main component={Town} town={match.match.params.town}
+              county={match.match.params.county} state={match.match.params.state} />
+        )}/>
+
+        <Route path='/MyTown/County/:county/:state' render={(match) => (
+          <Main component={County} county={match.match.params.county}
+              state={match.match.params.state} />
+        )}/>
+
+        <Route path='/MyTown/State/:state' render={(match) => (
+          <Main component={State} state={match.match.params.state} />
         )}/>
 
         <Route render={() => (

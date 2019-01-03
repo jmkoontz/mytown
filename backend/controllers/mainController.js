@@ -26,6 +26,28 @@ module.exports = (app) => {
     controllerUtils.buildResponse(res, data);
   });
 
+  app.get('/MyTown/County/:county/:state', async (req, res) => {
+    let data;
+    try {
+      data = await mainModel.getCountyExact(req.params.county, req.params.state);
+    } catch (err) {
+      data = {error: controllerUtils.parseError(err)};
+    }
+
+    controllerUtils.buildResponse(res, data);
+  });
+
+  app.get('/MyTown/State/:state', async (req, res) => {
+    let data;
+    try {
+      data = await mainModel.getState(req.params.state);
+    } catch (err) {
+      data = {error: controllerUtils.parseError(err)};
+    }
+
+    controllerUtils.buildResponse(res, data);
+  });
+
   app.get('/MyTown/Towns/County', async (req, res) => {
     let data;
     try {

@@ -10,47 +10,30 @@ class NavBar extends Component {
 
     this.state = {
 
-    }
+    };
   }
 
   render() {
     return (
-      <Row>
-        <Col className='title' sm='2'>
+      <Row className='background'>
+        <Col className='titleCol' xs='2'>
           <NavLink to={'/MyTown/Home'} style={{textDecoration: 'none'}}>
-            <b className='navText' style={{fontSize: '1em'}}>MyTown</b>
+            <b className='title'>MyTown</b>
           </NavLink>
         </Col>
-
-        <Col className='navText' sm='1' md='1'>
+        <Col xs='8' />
+        <Col className='navCol'>
+          <NavLink to={'/MyTown/...'} style={{textDecoration: 'none'}}>
+            <b className='navText'></b>
+          </NavLink>
+        </Col>
+        <Col className='navCol'>
           <NavLink to={'/MyTown/About'} style={{textDecoration: 'none'}}>
-            <b className='navText' style={{fontSize: '1em'}}>About</b>
-          </NavLink>
-        </Col>
-        <Col className='navText' sm='1' md='1'>
-          <NavLink to={'/MyTown/Home'} style={{textDecoration: 'none'}}>
-            <b className='navText' style={{fontSize: '1em'}}>MyTown</b>
-          </NavLink>
-        </Col>
-
-        <Col className='navText' sm='1' md='1'>
-          <NavLink to={'/MyTown/About'} style={{textDecoration: 'none'}}>
-            <b className='navText' style={{fontSize: '1em'}}>About</b>
-          </NavLink>
-        </Col>
-        <Col className='navText' sm='1' md='1'>
-          <NavLink to={'/MyTown/Home'} style={{textDecoration: 'none'}}>
-            <b className='navText' style={{fontSize: '1em'}}>MyTown</b>
-          </NavLink>
-        </Col>
-
-        <Col className='navText' sm='1' md='1'>
-          <NavLink to={'/MyTown/About'} style={{textDecoration: 'none'}}>
-            <b className='navText' style={{fontSize: '1em'}}>About</b>
+            <b className='navText'>About</b>
           </NavLink>
         </Col>
       </Row>
-    )
+    );
   }
 }
 
