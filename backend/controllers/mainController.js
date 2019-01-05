@@ -7,7 +7,18 @@ module.exports = (app) => {
   app.get('/MyTown/Towns', async (req, res) => {
     let data;
     try {
-      data = await mainModel.getTown(req.query.town);
+      data = await mainModel.getTown(req.query.town, req.query.county, req.query.state);
+    } catch (err) {
+      data = {error: controllerUtils.parseError(err)};
+    }
+
+    controllerUtils.buildResponse(res, data);
+  });
+
+  app.get('/MyTown/Counties', async (req, res) => {
+    let data;
+    try {
+      data = await mainModel.getCounty(req.query.county, req.query.state);
     } catch (err) {
       data = {error: controllerUtils.parseError(err)};
     }
@@ -40,35 +51,35 @@ module.exports = (app) => {
   app.get('/MyTown/State/:state', async (req, res) => {
     let data;
     try {
-      data = await mainModel.getState(req.params.state);
+      data = await mainModel.getStateExact(req.params.state);
     } catch (err) {
       data = {error: controllerUtils.parseError(err)};
     }
 
     controllerUtils.buildResponse(res, data);
   });
-
-  app.get('/MyTown/Towns/County', async (req, res) => {
-    let data;
-    try {
-      data = await mainModel.getTownsInCounty(req.query.county, req.query.state);
-    } catch (err) {
-      data = {error: controllerUtils.parseError(err)};
-    }
-
-    controllerUtils.buildResponse(res, data);
-  });
-
-  app.get('/MyTown/Towns/State', async (req, res) => {
-    let data;
-    try {
-      data = await mainModel.getTownsInState(req.query.state);
-    } catch (err) {
-      data = {error: controllerUtils.parseError(err)};
-    }
-
-    controllerUtils.buildResponse(res, data);
-  });
+  //
+  // app.get('/MyTown/Towns/County', async (req, res) => {
+  //   let data;
+  //   try {
+  //     data = await mainModel.getTownsInCounty(req.query.county, req.query.state);
+  //   } catch (err) {
+  //     data = {error: controllerUtils.parseError(err)};
+  //   }
+  //
+  //   controllerUtils.buildResponse(res, data);
+  // });
+  //
+  // app.get('/MyTown/Towns/State', async (req, res) => {
+  //   let data;
+  //   try {
+  //     data = await mainModel.getTownsInState(req.query.state);
+  //   } catch (err) {
+  //     data = {error: controllerUtils.parseError(err)};
+  //   }
+  //
+  //   controllerUtils.buildResponse(res, data);
+  // });
 
   /*
   select * from cities where median_income >= 200000;

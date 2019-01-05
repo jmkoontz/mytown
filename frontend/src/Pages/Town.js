@@ -39,7 +39,7 @@ class Town extends Component {
           name: town.name,
           county: town.county,
           state: town.state,
-          population: town.population,
+          population: town.population.toLocaleString(),
           median_income: formatter.format(town.median_income),
           adjusted_median_income: formatter.format(town['median_income / (cost_of_living / 100)']),
           cost_of_living: town.cost_of_living,

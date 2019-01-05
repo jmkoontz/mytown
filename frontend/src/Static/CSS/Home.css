@@ -1,0 +1,8 @@
+.navText {
+  color: #4C7E97;
+}
+
+.navText:hover {
+  color: #00486B;
+  cursor: pointer;
+}

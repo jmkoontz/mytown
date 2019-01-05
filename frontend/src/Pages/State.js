@@ -34,11 +34,12 @@ class State extends Component {
 
         self.setState({
           state: state.state,
-          num_towns: state['count(*)'],
-          population: state['sum(population)'],
-          median_income: formatter.format(state['avg(median_income)']),
-          adjusted_median_income: formatter.format(state['avg(median_income / (cost_of_living / 100))']),
-          cost_of_living: state['avg(cost_of_living)'],
+          num_towns: state['COUNT(*)'].toLocaleString(),
+          num_counties: state['COUNT(DISTINCT county)'].toLocaleString(),
+          population: state['SUM(population)'].toLocaleString(),
+          median_income: formatter.format(state['AVG(median_income)']),
+          adjusted_median_income: formatter.format(state['AVG(median_income / (cost_of_living / 100))']),
+          cost_of_living: Math.round(state['AVG(cost_of_living)'] * 100) / 100
         });
       }).catch((error) => {
         if (error.response && error.response.data) {
@@ -56,6 +57,7 @@ class State extends Component {
           <Col>
             <p>State: {this.state.state}</p>
             <p>Number of Towns: {this.state.num_towns}</p>
+            <p>Number of Counties: {this.state.num_counties}</p>
             <p>Total Population: {this.state.population}</p>
             <p>Average Median Income: {this.state.median_income}</p>
             <p>Average Adjusted Median Income: {this.state.adjusted_median_income}</p>

@@ -36,11 +36,11 @@ class County extends Component {
         self.setState({
           county: county.county,
           state: county.state,
-          num_towns: county['count(*)'],
-          population: county['sum(population)'],
-          median_income: formatter.format(county['avg(median_income)']),
-          adjusted_median_income: formatter.format(county['avg(median_income / (cost_of_living / 100))']),
-          cost_of_living: county['avg(cost_of_living)'],
+          num_towns: county['COUNT(*)'].toLocaleString(),
+          population: county['SUM(population)'].toLocaleString(),
+          median_income: formatter.format(county['AVG(median_income)']),
+          adjusted_median_income: formatter.format(county['AVG(median_income / (cost_of_living / 100))']),
+          cost_of_living: Math.round(county['AVG(cost_of_living)'] * 100) / 100
         });
       }).catch((error) => {
         if (error.response && error.response.data) {

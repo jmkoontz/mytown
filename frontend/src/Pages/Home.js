@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
-import { Container, Row, Col, Form, FormGroup, Input, Label, Button, ButtonGroup, Alert } from 'reactstrap';
-import { Redirect } from 'react-router';
+import { Container, Row, Col, Form, FormGroup, Input, Label, Button,
+    ButtonGroup, Alert } from 'reactstrap';
+import { NavLink, Redirect } from 'react-router-dom';
 import axios from 'axios';
 
 import '../Static/CSS/Home.css';
@@ -16,43 +17,102 @@ class Home extends Component {
 
       town: '',
       county: '',
-      state: ''
+      state: '',
+
+      specific: true,
+      searchResults: []
     };
   }
 
   toggleMode = (selected) => {
-    this.setState({mode: selected});
+    this.setState({
+      mode: selected,
+      searchResults: []
+    });
   };
 
   onSubmit = (ev) => {
+    this.setState({
+      visible: false,
+      searchResults: []
+    });
+
     ev.preventDefault();
     let target = ev.target;
 
-    if ((target.town.value === '' && this.state.mode === 'town')
-        || (target.county.value === '' && this.state.mode !== 'state')
-        || target.state.value === '--Please Select State--') {
+    let specific = true;
+    if ((this.state.mode === 'town' && (target.town.value === ''
+        || target.county.value === ''
+        || target.state.value === '--Please Select State--'))
+        || (this.state.mode === 'county' && (target.county.value === ''
+        || target.state.value === '--Please Select State--'))) {
+      specific = false;
+    }
+
+    if ((this.state.mode === 'town' && target.town.value === ''
+        && target.county.value === '' && target.state.value === '--Please Select State--')
+        || (this.state.mode === 'county' && target.county.value === ''
+        && target.state.value === '--Please Select State--') || (this.state.mode === 'state'
+        && target.state.value === '--Please Select State--')) {
       this.setState({
         visible: true,
-        message: 'Please fill out the entire form!'
+        message: 'Please fill out at least one field'
       });
     } else {
       let url = `http://localhost:3001/MyTown/`;
 
-      if (this.state.mode === 'town')
-        url += `Town/${target.town.value}/${target.county.value}/${target.state.value}`;
-      else if (this.state.mode === 'county')
-        url += `County/${target.county.value}/${target.state.value}`;
-      else if (this.state.mode === 'state')
+      if (this.state.mode === 'town') {
+        if (specific)
+          url += `Town/${target.town.value}/${target.county.value}/${target.state.value}`;
+        else {
+          url += `Towns?town=${target.town.value}&county=${target.county.value}`;
+
+          if (target.state.value !== '--Please Select State--')
+            url += `&state=${target.state.value}`;
+        }
+      } else if (this.state.mode === 'county') {
+        if (specific)
+          url += `County/${target.county.value}/${target.state.value}`;
+        else {
+          url += `Counties?county=${target.county.value}`;
+
+          if (target.state.value !== '--Please Select State--')
+            url += `&state=${target.state.value}`;
+        }
+      } else if (this.state.mode === 'state') {
         url += `State/${target.state.value}`;
+      }
 
       let self = this;
       axios.get(url)
         .then((result) => {
-          self.setState({
-            town: target.town.value,
-            county: target.county.value,
-            state: target.state.value
-          });
+          let results = JSON.parse(result.data);
+
+          if (specific && results.length === 1) {
+            self.setState({
+              town: target.town.value,
+              county: target.county.value,
+              state: target.state.value
+            });
+          } else {
+            let resultsArr = [];
+            for (let i in results) {
+              if (this.state.mode === 'town') {
+                resultsArr.push({
+                  town: results[i].name,
+                  county: results[i].county,
+                  state: results[i].state
+                });
+              } else if (this.state.mode === 'county'){
+                resultsArr.push({
+                  county: results[i].county,
+                  state: results[i].state
+                });
+              }
+            }
+
+            self.setState({searchResults: resultsArr});
+          }
         }).catch((error) => {
           if (error.response && error.response.data) {
             self.setState({
@@ -106,16 +166,17 @@ class Home extends Component {
     return (
       <Container>
         <Row>
-          <h5>Radio Buttons</h5>
-          <ButtonGroup>
-            <Button onClick={() => this.toggleMode('town')} active={this.state.mode === 'town'}>Town</Button>
-            <Button onClick={() => this.toggleMode('county')} active={this.state.mode === 'county'}>County</Button>
-            <Button onClick={() => this.toggleMode('state')} active={this.state.mode === 'state'}>State</Button>
-          </ButtonGroup>
-          <p>Selected: {this.state.mode}</p>
+          <Col xs={{size: 4, offset: 4}}>
+            <ButtonGroup>
+              <Button onClick={() => this.toggleMode('town')} active={this.state.mode === 'town'}>Town</Button>
+              <Button onClick={() => this.toggleMode('county')} active={this.state.mode === 'county'}>County</Button>
+              <Button onClick={() => this.toggleMode('state')} active={this.state.mode === 'state'}>State</Button>
+            </ButtonGroup>
+          </Col>
         </Row>
         <Row>
           <Col xs={{size: 4, offset: 4}}>
+            <br/>
             <Form onSubmit={this.onSubmit}>
               <FormGroup row hidden={this.state.mode !== 'town'}>
                 <Label for='town' xs='2'>Town</Label>
@@ -147,6 +208,36 @@ class Home extends Component {
             <Alert color='primary' isOpen={this.state.visible} toggle={this.onDismiss}>
               {this.state.message}
             </Alert>
+            {
+              (this.state.searchResults.length === 0)
+                ?
+                <p></p>
+                :
+                (this.state.searchResults.length === 1)
+                  ?
+                  <p>{this.state.searchResults.length} result found:</p>
+                  :
+                  <p>{this.state.searchResults.length} results found:</p>
+            }
+            {
+              this.state.searchResults.map((item, index) => {
+                if (this.state.mode === 'town') {
+                  return (
+                    <NavLink to={`/MyTown/Town/${item.town}/${item.county}/${item.state}`}
+                        style={{textDecoration: 'none'}}>
+                      <p key={index} className='navText'>{item.town}, {item.state} ({item.county} County)</p>
+                    </NavLink>
+                  );
+                } else {
+                  return (
+                    <NavLink to={`/MyTown/County/${item.county}/${item.state}`}
+                        style={{textDecoration: 'none'}}>
+                      <p key={index} className='navText'>{item.county} County, {item.state}</p>
+                    </NavLink>
+                  );
+                }
+              })
+            }
           </Col>
         </Row>
       </Container>
