@@ -1,0 +1,12 @@
+.sortIcon {
+    color: gray;
+}
+
+.sortIcon:hover {
+  cursor: pointer;
+  color: black;
+}
+
+.titleRow {
+  font-weight: bold;
+}

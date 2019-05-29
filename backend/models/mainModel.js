@@ -3,7 +3,7 @@ const Database = require('../config/db');
 module.exports = {
   getTown: function(town, county, state) {
     let db = new Database();
-    let qs = `SELECT name, county, state FROM cities WHERE`;
+    let qs = `SELECT *, median_income / (cost_of_living / 100) AS adj_income FROM cities WHERE`;
     let args = [];
 
     if (town) {
@@ -42,7 +42,10 @@ module.exports = {
 
   getCounty: function(county, state) {
     let db = new Database();
-    let qs = `SELECT county, state FROM cities WHERE`;
+    let qs = `SELECT county, state, COUNT(*) AS num_towns, SUM(population) AS sum_population,
+        AVG(median_income) AS avg_income, AVG(cost_of_living) AS avg_cost_of_living,
+        AVG(median_income / (cost_of_living / 100)) AS avg_adj_income
+        FROM cities WHERE`;
     let args = [];
 
     if (county) {
@@ -68,7 +71,7 @@ module.exports = {
 
   getTownExact: function(town, county, state) {
     let db = new Database();
-    const qs = `SELECT *, median_income / (cost_of_living / 100)
+    const qs = `SELECT *, median_income / (cost_of_living / 100) AS adj_income
         FROM cities WHERE name = ? AND county = ? AND state = ?`;
 
     return db.query(qs, [town, county, state])
@@ -82,41 +85,11 @@ module.exports = {
       });
   },
 
-  // getTownsInCounty: function(county, state) {
-  //   let db = new Database();
-  //   const qs = `SELECT * FROM cities WHERE county = ? AND state = ?`;
-  //
-  //   return db.query(qs, [county, state])
-  //     .then((result) => {
-  //       if (result === undefined || result.length === 0)
-  //         return Promise.reject('UserError: County not found');
-  //
-  //       return JSON.stringify(result);
-  //     }).catch((err) => {
-  //       return Promise.reject(err);
-  //     });
-  // },
-  //
-  // getTownsInState: function(state) {
-  //   let db = new Database();
-  //   const qs = `SELECT * FROM cities WHERE state = ?`;
-  //
-  //   return db.query(qs, [state])
-  //     .then((result) => {
-  //       if (result === undefined || result.length === 0)
-  //         return Promise.reject('UserError: State not found');
-  //
-  //       return JSON.stringify(result);
-  //     }).catch((err) => {
-  //       return Promise.reject(err);
-  //     });
-  // },
-
   getCountyExact: function(county, state) {
     let db = new Database();
-    const qs = `SELECT county, state, COUNT(*), SUM(population),
-        AVG(median_income), AVG(cost_of_living),
-        AVG(median_income / (cost_of_living / 100))
+    const qs = `SELECT county, state, COUNT(*) AS num_towns, SUM(population) AS sum_population,
+        AVG(median_income) AS avg_income, AVG(cost_of_living) AS avg_cost_of_living,
+        AVG(median_income / (cost_of_living / 100)) AS avg_adj_income
         FROM cities WHERE county = ? AND state = ?`;
 
     return db.query(qs, [county, state])
@@ -132,10 +105,10 @@ module.exports = {
 
   getStateExact: function(state) {
     let db = new Database();
-    const qs = `SELECT state, COUNT(*), COUNT(DISTINCT county), SUM(population),
-        AVG(median_income), AVG(cost_of_living),
-        AVG(median_income / (cost_of_living / 100))
-        FROM cities WHERE state = ?`;
+    const qs = `SELECT state, COUNT(*) AS num_towns, COUNT(DISTINCT county) AS num_counties,
+        SUM(population) AS sum_population, AVG(median_income) AS avg_income,
+        AVG(cost_of_living) AS avg_cost_of_living, AVG(median_income / (cost_of_living / 100))
+        AS avg_adj_income FROM cities WHERE state = ?`;
 
     return db.query(qs, [state])
       .then((result) => {

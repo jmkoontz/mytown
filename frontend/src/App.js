@@ -6,6 +6,7 @@ import Home from './Pages/Home';
 import Town from './Pages/Town';
 import County from './Pages/County';
 import State from './Pages/State';
+import Leaderboard from './Pages/Leaderboard';
 
 class App extends Component {
   render() {
@@ -13,6 +14,10 @@ class App extends Component {
       <Switch>
         <Route path='/MyTown/Home' render={() => (
           <Main component={Home} />
+        )}/>
+
+        <Route path='/MyTown/Leaderboards' render={() => (
+          <Main component={Leaderboard} />
         )}/>
 
         <Route path='/MyTown/Town/:town/:county/:state' render={(match) => (

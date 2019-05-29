@@ -215,22 +215,22 @@ class Home extends Component {
                 :
                 (this.state.searchResults.length === 1)
                   ?
-                  <p>{this.state.searchResults.length} result found:</p>
+                  <p className='resultText'>{this.state.searchResults.length} result found:</p>
                   :
-                  <p>{this.state.searchResults.length} results found:</p>
+                  <p className='resultText'>{this.state.searchResults.length} results found:</p>
             }
             {
               this.state.searchResults.map((item, index) => {
                 if (this.state.mode === 'town') {
                   return (
-                    <NavLink to={`/MyTown/Town/${item.town}/${item.county}/${item.state}`}
+                    <NavLink key={index} to={`/MyTown/Town/${item.town}/${item.county}/${item.state}`}
                         style={{textDecoration: 'none'}}>
                       <p key={index} className='navText'>{item.town}, {item.state} ({item.county} County)</p>
                     </NavLink>
                   );
                 } else {
                   return (
-                    <NavLink to={`/MyTown/County/${item.county}/${item.state}`}
+                    <NavLink key={index} to={`/MyTown/County/${item.county}/${item.state}`}
                         style={{textDecoration: 'none'}}>
                       <p key={index} className='navText'>{item.county} County, {item.state}</p>
                     </NavLink>

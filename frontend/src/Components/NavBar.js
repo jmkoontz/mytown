@@ -21,15 +21,15 @@ class NavBar extends Component {
             <b className='title'>MyTown</b>
           </NavLink>
         </Col>
-        <Col xs='8' />
+        <Col xs='7'/>
         <Col className='navCol'>
-          <NavLink to={'/MyTown/...'} style={{textDecoration: 'none'}}>
-            <b className='navText'></b>
+          <NavLink to={'/MyTown/Leaderboards'} style={{textDecoration: 'none'}}>
+            <b className='navBarText'>Leaderboards</b>
           </NavLink>
         </Col>
         <Col className='navCol'>
           <NavLink to={'/MyTown/About'} style={{textDecoration: 'none'}}>
-            <b className='navText'>About</b>
+            <b className='navBarText'>About</b>
           </NavLink>
         </Col>
       </Row>

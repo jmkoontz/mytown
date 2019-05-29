@@ -14,7 +14,8 @@
   cursor: pointer;
 }
 
-.navText {
+.navBarText {
+  font-size: 1em;
   color: #00486B;
 }
 
@@ -24,7 +25,7 @@
   padding-bottom: 1.5em;
 }
 
-.navText:hover {
+.navBarText:hover {
   color: #99B5C3;
   cursor: pointer;
 }

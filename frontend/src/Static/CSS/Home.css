@@ -6,3 +6,7 @@
   color: #00486B;
   cursor: pointer;
 }
+
+.resultText {
+  font-weight: bold;
+}

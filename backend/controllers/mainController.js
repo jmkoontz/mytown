@@ -2,6 +2,8 @@ const bodyParser = require('body-parser');
 
 const controllerUtils = require('./controllerUtils');
 const mainModel = require('../models/mainModel');
+const rankModel = require('../models/rankModel');
+const leaderboardModel = require('../models/leaderboardModel');
 
 module.exports = (app) => {
   app.get('/MyTown/Towns', async (req, res) => {
@@ -58,38 +60,49 @@ module.exports = (app) => {
 
     controllerUtils.buildResponse(res, data);
   });
-  //
-  // app.get('/MyTown/Towns/County', async (req, res) => {
-  //   let data;
-  //   try {
-  //     data = await mainModel.getTownsInCounty(req.query.county, req.query.state);
-  //   } catch (err) {
-  //     data = {error: controllerUtils.parseError(err)};
-  //   }
-  //
-  //   controllerUtils.buildResponse(res, data);
-  // });
-  //
-  // app.get('/MyTown/Towns/State', async (req, res) => {
-  //   let data;
-  //   try {
-  //     data = await mainModel.getTownsInState(req.query.state);
-  //   } catch (err) {
-  //     data = {error: controllerUtils.parseError(err)};
-  //   }
-  //
-  //   controllerUtils.buildResponse(res, data);
-  // });
 
-  /*
-  select * from cities where median_income >= 200000;
-  select * from cities where population > 100000 and median_income > 100000;
-  select count(*) from cities where population > 1000;
-  select sum(population), avg(median_income), avg(cost_of_living), avg(crime_index) from cities;
-  select name, state, population, median_income, cost_of_living, (median_income / (cost_of_living / 100)) from cities;
-  select state, sum(population), avg(median_income), avg(cost_of_living), (avg(median_income) / avg(cost_of_living / 100)) from cities group by state;
-  select state, sum(population), avg(population), count(*), sum(land_area), avg(crime_index) from cities group by state order by sum(population) desc;
-  select county, state, sum(population), avg(median_income), avg(cost_of_living) from cities group by county;
-  select state, max(median_income), min(median_income), avg(median_income), max(population), min(population), avg(population) from cities group by state;
-  */
+  app.get('/MyTown/Rank/Town/:town/:county/:state/:type', async (req, res) => {
+    let data;
+    try {
+      data = await rankModel.getTownRanks(req.params.town, req.params.county, req.params.state, req.params.type);
+    } catch (err) {
+      data = {error: controllerUtils.parseError(err)};
+    }
+
+    controllerUtils.buildResponse(res, data);
+  });
+
+  app.get('/MyTown/Rank/County/:county/:state/:type', async (req, res) => {
+    let data;
+    try {
+      data = await rankModel.getCountyRanks(req.params.county, req.params.state, req.params.type);
+    } catch (err) {
+      data = {error: controllerUtils.parseError(err)};
+    }
+
+    controllerUtils.buildResponse(res, data);
+  });
+
+  app.get('/MyTown/Rank/State/:state', async (req, res) => {
+    let data;
+    try {
+      data = await rankModel.getStateRanks(req.params.state);
+    } catch (err) {
+      data = {error: controllerUtils.parseError(err)};
+    }
+
+    controllerUtils.buildResponse(res, data);
+  });
+
+  app.get('/MyTown/Leaderboards/', async (req, res) => {
+    let data;
+    try {
+      data = await leaderboardModel.getLeaderboard(req.query.mode, req.query.category,
+          req.query.direction, parseInt(req.query.quantity), req.query.scope, req.query.state);
+    } catch (err) {
+      data = {error: controllerUtils.parseError(err)};
+    }
+
+    controllerUtils.buildResponse(res, data);
+  });
 };
